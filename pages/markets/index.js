@@ -68,7 +68,7 @@ export default function MarketsPage() {
           <div className="container mx-auto px-4 lg:px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
               {markets.map((market, index) => {
-                const Icon = market.icon;
+                const IconComponent = market.icon;
                 return (
                   <div
                     key={market.name}
@@ -85,7 +85,7 @@ export default function MarketsPage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                       <div className="absolute top-6 left-6">
                         <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                          <Icon className="w-7 h-7 text-red-600" />
+                          {IconComponent && <IconComponent className="w-7 h-7 text-red-600" />}
                         </div>
                       </div>
                     </div>
@@ -112,4 +112,3 @@ export default function MarketsPage() {
     </div>
   );
 }
-

@@ -1,89 +1,156 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Layout, Menu, Button, message } from 'antd';
-import {
-  DashboardOutlined,
-  ShoppingOutlined,
-  AppstoreOutlined,
-  GlobalOutlined,
-  ToolOutlined,
-  PictureOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons';
+import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Button, Box, Typography, CssBaseline, Divider } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import CategoryIcon from '@mui/icons-material/Category';
+import LanguageIcon from '@mui/icons-material/Language';
+import BuildIcon from '@mui/icons-material/Build';
+import ImageIcon from '@mui/icons-material/Image';
+import PeopleIcon from '@mui/icons-material/People';
+import PersonIcon from '@mui/icons-material/Person';
+import WorkIcon from '@mui/icons-material/Work';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { removeToken } from '../lib/auth';
 
-const { Header, Sider, Content } = Layout;
+const drawerWidth = 240;
 
 const menuItems = [
-  { key: '/admin/dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
-  { key: '/admin/products', icon: <ShoppingOutlined />, label: 'Products' },
-  { key: '/admin/categories', icon: <AppstoreOutlined />, label: 'Categories' },
-  { key: '/admin/markets', icon: <GlobalOutlined />, label: 'Markets' },
-  { key: '/admin/services', icon: <ToolOutlined />, label: 'Services' },
-  { key: '/admin/banners', icon: <PictureOutlined />, label: 'Banners' },
+  { key: '/admin/dashboard', icon: <DashboardIcon />, label: 'Dashboard' },
+  { key: '/admin/products', icon: <InventoryIcon />, label: 'Products' },
+  { key: '/admin/categories', icon: <CategoryIcon />, label: 'Categories' },
+  { key: '/admin/markets', icon: <LanguageIcon />, label: 'Markets' },
+  { key: '/admin/services', icon: <BuildIcon />, label: 'Services' },
+  { key: '/admin/careers', icon: <WorkIcon />, label: 'Careers' },
+  { key: '/admin/banners', icon: <ImageIcon />, label: 'Banners' },
+  { key: '/admin/contact-leads', icon: <PeopleIcon />, label: 'Contact Leads' },
+  { key: '/admin/projects', icon: <WorkIcon />, label: 'Projects' },
+  { key: '/admin/users', icon: <PersonIcon />, label: 'Users' },
 ];
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
-  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const handleLogout = () => {
     removeToken();
-    message.success('Logged out successfully');
     router.push('/admin/login');
   };
 
+  const drawer = (
+    <div>
+      <Toolbar>
+        <Typography variant="h6" noWrap component="div" align="center" sx={{ flexGrow: 1, color: 'white', fontWeight: 'bold' }}>
+          Safe Zone
+        </Typography>
+      </Toolbar>
+      <Divider />
+      <List>
+        {menuItems.map((item) => (
+          <ListItem 
+            component="button"
+            key={item.key}
+            onClick={() => router.push(item.key)}
+            selected={router.pathname === item.key}
+            sx={{
+              backgroundColor: router.pathname === item.key ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              }
+            }}
+          >
+            <ListItemIcon sx={{ color: 'white' }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText primary={item.label} sx={{ color: 'white' }} />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
+
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider 
-        collapsible 
-        collapsed={collapsed} 
-        onCollapse={setCollapsed}
-        theme="dark"
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
       >
-        <div style={{ 
-          height: 64, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: 18,
-          fontWeight: 'bold'
-        }}>
-          {collapsed ? 'FS' : 'Fire Safety'}
-        </div>
-        <Menu
-          theme="dark"
-          selectedKeys={[router.pathname]}
-          mode="inline"
-          items={menuItems}
-          onClick={({ key }) => router.push(key)}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ 
-          background: '#fff', 
-          padding: '0 24px', 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-        }}>
-          <h2 style={{ margin: 0 }}>Admin Panel</h2>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+            Admin Panel
+          </Typography>
           <Button 
-            type="primary" 
-            danger 
-            icon={<LogoutOutlined />}
+            variant="contained" 
+            color="error" 
+            startIcon={<ExitToAppIcon />}
             onClick={handleLogout}
+            sx={{ color: 'white' }}
           >
             Logout
           </Button>
-        </Header>
-        <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
+        </Toolbar>
+      </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="navigation"
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, backgroundColor: '#1976d2' },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar />
+        <Box sx={{ mt: 2, p: 2, backgroundColor: '#fff', minHeight: '80vh' }}>
           {children}
-        </Content>
-      </Layout>
-    </Layout>
+        </Box>
+      </Box>
+    </Box>
   );
 }
-

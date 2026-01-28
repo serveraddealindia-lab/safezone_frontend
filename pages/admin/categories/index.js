@@ -1,150 +1,201 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Space, Modal, Form, Input, message, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { 
+  Button, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle, 
+  TextField, 
+  Box, 
+  CircularProgress,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton
+} from '@mui/material';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import AdminLayout from '../../../components/AdminLayout';
-import ProtectedRoute from '../../../components/ProtectedRoute';
 import { categoriesAPI } from '../../../lib/api';
 
 export default function CategoriesPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState(null);
-  const [form] = Form.useForm();
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await categoriesAPI.getAll();
-      setData(response.data);
-    } catch (error) {
-      message.error('Failed to fetch categories');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState({
+    id: null,
+    name: ''
+  });
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const handleAdd = () => {
-    setEditingRecord(null);
-    form.resetFields();
-    setModalVisible(true);
+  const fetchData = async () => {
+    try {
+      const response = await categoriesAPI.getAll();
+      setCategories(response.data);
+    } catch (err) {
+      setError('Failed to load categories');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = (record) => {
-    setEditingRecord(record);
-    form.setFieldsValue(record);
-    setModalVisible(true);
+  const handleOpen = (category = null) => {
+    if (category) {
+      setCurrentCategory({
+        id: category.id,
+        name: category.name
+      });
+    } else {
+      setCurrentCategory({
+        id: null,
+        name: ''
+      });
+    }
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentCategory(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (currentCategory.id) {
+        await categoriesAPI.update(currentCategory.id, currentCategory);
+      } else {
+        await categoriesAPI.create(currentCategory);
+      }
+      fetchData();
+      handleClose();
+    } catch (err) {
+      setError('Operation failed');
+      console.error(err);
+    }
   };
 
   const handleDelete = async (id) => {
-    try {
-      await categoriesAPI.delete(id);
-      message.success('Category deleted successfully');
-      fetchData();
-    } catch (error) {
-      message.error('Failed to delete category');
-    }
-  };
-
-  const handleSubmit = async (values) => {
-    try {
-      if (editingRecord) {
-        await categoriesAPI.update(editingRecord.id, values);
-        message.success('Category updated successfully');
-      } else {
-        await categoriesAPI.create(values);
-        message.success('Category created successfully');
+    if (window.confirm('Are you sure you want to delete this category?')) {
+      try {
+        await categoriesAPI.delete(id);
+        fetchData();
+      } catch (err) {
+        setError('Delete failed');
+        console.error(err);
       }
-      setModalVisible(false);
-      form.resetFields();
-      fetchData();
-    } catch (error) {
-      message.error(error.response?.data?.error || 'Operation failed');
     }
   };
 
-  const columns = [
-    { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    {
-      title: 'Actions',
-      key: 'actions',
-      width: 150,
-      render: (_, record) => (
-        <Space>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            size="small"
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure you want to delete this category?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button
-              type="primary"
-              danger
-              icon={<DeleteOutlined />}
-              size="small"
-            >
-              Delete
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+  if (loading) {
+    return (
+      <AdminLayout>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="500px">
+          <CircularProgress />
+        </Box>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout>
+        <Alert severity="error">{error}</Alert>
+      </AdminLayout>
+    );
+  }
 
   return (
-    <ProtectedRoute>
-      <AdminLayout>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-          <h1>Categories</h1>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleAdd}
-          >
-            Add Category
-          </Button>
-        </div>
-        <Table
-          columns={columns}
-          dataSource={data}
-          loading={loading}
-          rowKey="id"
-          pagination={{ pageSize: 10 }}
-        />
-        <Modal
-          title={editingRecord ? 'Edit Category' : 'Add Category'}
-          open={modalVisible}
-          onCancel={() => {
-            setModalVisible(false);
-            form.resetFields();
-          }}
-          onOk={() => form.submit()}
+    <AdminLayout>
+      <Box sx={{ width: '100%', mt: 2 }}>
+        <Button 
+          variant="contained" 
+          onClick={() => handleOpen()}
+          sx={{ mb: 2 }}
         >
-          <Form form={form} onFinish={handleSubmit} layout="vertical">
-            <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ required: true, message: 'Please enter category name' }]}
-            >
-              <Input placeholder="Category name" />
-            </Form.Item>
-          </Form>
-        </Modal>
-      </AdminLayout>
-    </ProtectedRoute>
+          Add Category
+        </Button>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="categories table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {categories.map((category) => (
+                <TableRow
+                  key={category.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {category.id}
+                  </TableCell>
+                  <TableCell>{category.name}</TableCell>
+                  <TableCell>
+                    <IconButton 
+                      color="primary" 
+                      onClick={() => handleOpen(category)}
+                      size="small"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton 
+                      color="error" 
+                      onClick={() => handleDelete(category.id)}
+                      size="small"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {currentCategory.id ? 'Edit Category' : 'Add Category'}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="name"
+            label="Name"
+            fullWidth
+            variant="outlined"
+            value={currentCategory.name}
+            onChange={handleChange}
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained">
+            {currentCategory.id ? 'Update' : 'Create'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </AdminLayout>
   );
 }
-

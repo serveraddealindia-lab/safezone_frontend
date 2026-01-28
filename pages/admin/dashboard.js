@@ -1,75 +1,102 @@
-import { Row, Col, Card, Statistic } from 'antd';
-import {
-  ShoppingOutlined,
-  AppstoreOutlined,
-  GlobalOutlined,
-  ToolOutlined,
-  PictureOutlined,
-} from '@ant-design/icons';
+import { useState, useEffect } from 'react';
+import { Paper, Grid, Typography, Box, CircularProgress } from '@mui/material';
 import AdminLayout from '../../components/AdminLayout';
-import ProtectedRoute from '../../components/ProtectedRoute';
+import { api } from '../../lib/api';
 
-function Dashboard() {
-  return (
-    <ProtectedRoute>
+export default function AdminDashboard() {
+  const [stats, setStats] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const response = await api.get('/admin/stats');
+      setStats(response.data);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
       <AdminLayout>
-        <h1 style={{ marginBottom: 24 }}>Dashboard</h1>
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12} lg={6}>
-            <Card>
-              <Statistic
-                title="Products"
-                value={0}
-                prefix={<ShoppingOutlined />}
-                valueStyle={{ color: '#3f8600' }}
-              />
-            </Card>
-          </Col>
-          <Col xs={24} sm={12} lg={6}>
-            <Card>
-              <Statistic
-                title="Categories"
-                value={0}
-                prefix={<AppstoreOutlined />}
-                valueStyle={{ color: '#1890ff' }}
-              />
-            </Card>
-          </Col>
-          <Col xs={24} sm={12} lg={6}>
-            <Card>
-              <Statistic
-                title="Markets"
-                value={0}
-                prefix={<GlobalOutlined />}
-                valueStyle={{ color: '#cf1322' }}
-              />
-            </Card>
-          </Col>
-          <Col xs={24} sm={12} lg={6}>
-            <Card>
-              <Statistic
-                title="Services"
-                value={0}
-                prefix={<ToolOutlined />}
-                valueStyle={{ color: '#722ed1' }}
-              />
-            </Card>
-          </Col>
-          <Col xs={24} sm={12} lg={6}>
-            <Card>
-              <Statistic
-                title="Banners"
-                value={0}
-                prefix={<PictureOutlined />}
-                valueStyle={{ color: '#fa8c16' }}
-              />
-            </Card>
-          </Col>
-        </Row>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="500px">
+          <CircularProgress />
+        </Box>
       </AdminLayout>
-    </ProtectedRoute>
+    );
+  }
+
+  return (
+    <AdminLayout>
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography variant="h4" gutterBottom>
+          Dashboard Overview
+        </Typography>
+        
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Total Products</Typography>
+              <Typography variant="h4">{stats.totalProducts || 0}</Typography>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Total Categories</Typography>
+              <Typography variant="h4">{stats.totalCategories || 0}</Typography>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Total Services</Typography>
+              <Typography variant="h4">{stats.totalServices || 0}</Typography>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Contact Leads</Typography>
+              <Typography variant="h4">{stats.totalContactLeads || 0}</Typography>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Careers</Typography>
+              <Typography variant="h4">{stats.totalCareers || 0}</Typography>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Banners</Typography>
+              <Typography variant="h4">{stats.totalBanners || 0}</Typography>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Markets</Typography>
+              <Typography variant="h4">{stats.totalMarkets || 0}</Typography>
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" color="textSecondary">Users</Typography>
+              <Typography variant="h4">{stats.totalUsers || 0}</Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
+    </AdminLayout>
   );
 }
-
-export default Dashboard;
-

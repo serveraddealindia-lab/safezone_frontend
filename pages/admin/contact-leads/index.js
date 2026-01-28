@@ -9,6 +9,11 @@ import {
   Box, 
   CircularProgress,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -20,22 +25,23 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import AdminLayout from '../../../components/AdminLayout';
-import { servicesAPI } from '../../../lib/api';
+import { contactAPI } from '../../../lib/api';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-
-export default function ServicesPage() {
-  const [services, setServices] = useState([]);
+export default function ContactLeadsPage() {
+  const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
-  const [currentService, setCurrentService] = useState({
+  const [currentLead, setCurrentLead] = useState({
+    id: null,
     id: null,
     name: '',
-    description: '',
-    image: null
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+    status: 'pending'
   });
-  const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -43,33 +49,37 @@ export default function ServicesPage() {
 
   const fetchData = async () => {
     try {
-      const response = await servicesAPI.getAll();
-      setServices(response.data);
+      const response = await contactAPI.getAll();
+      setLeads(response.data.data || []);
     } catch (err) {
-      setError('Failed to load services');
+      setError('Failed to load contact leads');
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOpen = (service = null) => {
-    if (service) {
-      setCurrentService({
-        id: service.id,
-        name: service.name,
-        description: service.description,
-        image: null
+  const handleOpen = (lead = null) => {
+    if (lead) {
+      setCurrentLead({
+        id: lead.id,
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        subject: lead.subject,
+        message: lead.message,
+        status: lead.status
       });
-      setImagePreview(service.image ? `${API_BASE_URL.replace('/api/v1', '')}/uploads/${service.image}` : '');
     } else {
-      setCurrentService({
+      setCurrentLead({
         id: null,
         name: '',
-        description: '',
-        image: null
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+        status: 'pending'
       });
-      setImagePreview('');
     }
     setOpen(true);
   };
@@ -80,47 +90,18 @@ export default function ServicesPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCurrentService(prev => ({
+    setCurrentLead(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    const file = files[0];
-    
-    if (file) {
-      setCurrentService(prev => ({
-        ...prev,
-        [name]: file
-      }));
-
-      // Preview for images
-      if (name === 'image') {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  };
-
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append('name', currentService.name);
-    formData.append('description', currentService.description);
-    
-    if (currentService.image) {
-      formData.append('image', currentService.image);
-    }
-
     try {
-      if (currentService.id) {
-        await servicesAPI.update(currentService.id, formData);
+      if (currentLead.id) {
+        await contactAPI.updateStatus(currentLead.id, currentLead.status);
       } else {
-        await servicesAPI.create(formData);
+        await contactAPI.submit(currentLead);
       }
       fetchData();
       handleClose();
@@ -131,9 +112,9 @@ export default function ServicesPage() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this service?')) {
+    if (window.confirm('Are you sure you want to delete this contact lead?')) {
       try {
-        await servicesAPI.delete(id);
+        await contactAPI.delete(id);
         fetchData();
       } catch (err) {
         setError('Delete failed');
@@ -168,52 +149,52 @@ export default function ServicesPage() {
           onClick={() => handleOpen()}
           sx={{ mb: 2 }}
         >
-          Add Service
+          Add Lead
         </Button>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="services table">
+          <Table sx={{ minWidth: 650 }} aria-label="contact leads table">
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Image</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Subject</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {services.map((service) => (
+              {leads.map((lead) => (
                 <TableRow
-                  key={service.id}
+                  key={lead.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {service.id}
+                    {lead.id}
                   </TableCell>
-                  <TableCell>{service.name}</TableCell>
-                  <TableCell>{service.description.substring(0, 50)}{service.description.length > 50 ? '...' : ''}</TableCell>
+                  <TableCell>{lead.name}</TableCell>
+                  <TableCell>{lead.email}</TableCell>
+                  <TableCell>{lead.phone}</TableCell>
+                  <TableCell>{lead.subject}</TableCell>
                   <TableCell>
-                    {service.image ? (
-                      <img 
-                        src={`${API_BASE_URL.replace('/api/v1', '')}/uploads/${service.image}`} 
-                        alt={service.name} 
-                        style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-                      />
-                    ) : (
-                      'No image'
-                    )}
+                    <Chip 
+                      label={lead.status} 
+                      color={lead.status === 'resolved' ? 'success' : lead.status === 'in-progress' ? 'warning' : 'default'} 
+                      size="small" 
+                    />
                   </TableCell>
                   <TableCell>
                     <IconButton 
                       color="primary" 
-                      onClick={() => handleOpen(service)}
+                      onClick={() => handleOpen(lead)}
                       size="small"
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton 
                       color="error" 
-                      onClick={() => handleDelete(service.id)}
+                      onClick={() => handleDelete(lead.id)}
                       size="small"
                     >
                       <DeleteIcon />
@@ -228,7 +209,7 @@ export default function ServicesPage() {
 
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>
-          {currentService.id ? 'Edit Service' : 'Add Service'}
+          {currentLead.id ? 'View/Edit Contact Lead' : 'Add Contact Lead'}
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -238,46 +219,69 @@ export default function ServicesPage() {
             label="Name"
             fullWidth
             variant="outlined"
-            value={currentService.name}
+            value={currentLead.name}
             onChange={handleChange}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
             margin="dense"
-            name="description"
-            label="Description"
+            name="email"
+            label="Email"
             fullWidth
             variant="outlined"
-            value={currentService.description}
+            value={currentLead.email}
+            onChange={handleChange}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="phone"
+            label="Phone"
+            fullWidth
+            variant="outlined"
+            value={currentLead.phone}
+            onChange={handleChange}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="subject"
+            label="Subject"
+            fullWidth
+            variant="outlined"
+            value={currentLead.subject}
+            onChange={handleChange}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="message"
+            label="Message"
+            fullWidth
+            variant="outlined"
+            value={currentLead.message}
             onChange={handleChange}
             multiline
             rows={4}
+            sx={{ mb: 2 }}
           />
-          
-          <Box sx={{ mb: 2 }}>
-            <input
-              accept="image/*"
-              style={{ display: 'none' }}
-              id="image-upload"
-              type="file"
-              name="image"
-              onChange={handleFileChange}
-            />
-            <label htmlFor="image-upload">
-              <Button variant="outlined" component="span" sx={{ mr: 2 }}>
-                Upload Image
-              </Button>
-            </label>
-            {imagePreview && (
-              <img src={imagePreview} alt="Preview" style={{ maxHeight: 100, marginLeft: 10 }} />
-            )}
-          </Box>
-        
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Status</InputLabel>
+            <Select
+              name="status"
+              value={currentLead.status}
+              onChange={handleChange}
+            >
+              <MenuItem value="pending">Pending</MenuItem>
+              <MenuItem value="in-progress">In Progress</MenuItem>
+              <MenuItem value="resolved">Resolved</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSubmit} variant="contained">
-            {currentService.id ? 'Update' : 'Create'}
+            Update
           </Button>
         </DialogActions>
       </Dialog>

@@ -9,6 +9,11 @@ import {
   Box, 
   CircularProgress,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -20,22 +25,19 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import AdminLayout from '../../../components/AdminLayout';
-import { servicesAPI } from '../../../lib/api';
+import { usersAPI } from '../../../lib/api';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-
-export default function ServicesPage() {
-  const [services, setServices] = useState([]);
+export default function UsersPage() {
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
-  const [currentService, setCurrentService] = useState({
+  const [currentUser, setCurrentUser] = useState({
     id: null,
     name: '',
-    description: '',
-    image: null
+    email: '',
+    role: 'user'
   });
-  const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -43,33 +45,31 @@ export default function ServicesPage() {
 
   const fetchData = async () => {
     try {
-      const response = await servicesAPI.getAll();
-      setServices(response.data);
+      const response = await usersAPI.getAll();
+      setUsers(response.data.data || []);
     } catch (err) {
-      setError('Failed to load services');
+      setError('Failed to load users');
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOpen = (service = null) => {
-    if (service) {
-      setCurrentService({
-        id: service.id,
-        name: service.name,
-        description: service.description,
-        image: null
+  const handleOpen = (user = null) => {
+    if (user) {
+      setCurrentUser({
+        id: user.id,
+        name: user.name || '',
+        email: user.email,
+        role: user.role
       });
-      setImagePreview(service.image ? `${API_BASE_URL.replace('/api/v1', '')}/uploads/${service.image}` : '');
     } else {
-      setCurrentService({
+      setCurrentUser({
         id: null,
         name: '',
-        description: '',
-        image: null
+        email: '',
+        role: 'user'
       });
-      setImagePreview('');
     }
     setOpen(true);
   };
@@ -80,47 +80,21 @@ export default function ServicesPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCurrentService(prev => ({
+    setCurrentUser(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    const file = files[0];
-    
-    if (file) {
-      setCurrentService(prev => ({
-        ...prev,
-        [name]: file
-      }));
-
-      // Preview for images
-      if (name === 'image') {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  };
-
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append('name', currentService.name);
-    formData.append('description', currentService.description);
-    
-    if (currentService.image) {
-      formData.append('image', currentService.image);
-    }
-
     try {
-      if (currentService.id) {
-        await servicesAPI.update(currentService.id, formData);
+      if (currentUser.id) {
+        await usersAPI.update(currentUser.id, currentUser);
       } else {
-        await servicesAPI.create(formData);
+        // For creating a new user, we need to handle password
+        // This would require a separate form for security reasons
+        alert("Creating new users requires password, which needs a separate secure form");
+        return;
       }
       fetchData();
       handleClose();
@@ -131,9 +105,9 @@ export default function ServicesPage() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this service?')) {
+    if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await servicesAPI.delete(id);
+        await usersAPI.delete(id);
         fetchData();
       } catch (err) {
         setError('Delete failed');
@@ -168,52 +142,48 @@ export default function ServicesPage() {
           onClick={() => handleOpen()}
           sx={{ mb: 2 }}
         >
-          Add Service
+          Add User
         </Button>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="services table">
+          <Table sx={{ minWidth: 650 }} aria-label="users table">
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Image</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Role</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {services.map((service) => (
+              {users.map((user) => (
                 <TableRow
-                  key={service.id}
+                  key={user.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {service.id}
+                    {user.id}
                   </TableCell>
-                  <TableCell>{service.name}</TableCell>
-                  <TableCell>{service.description.substring(0, 50)}{service.description.length > 50 ? '...' : ''}</TableCell>
+                  <TableCell>{user.name || '-'}</TableCell>
+                  <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    {service.image ? (
-                      <img 
-                        src={`${API_BASE_URL.replace('/api/v1', '')}/uploads/${service.image}`} 
-                        alt={service.name} 
-                        style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-                      />
-                    ) : (
-                      'No image'
-                    )}
+                    <Chip 
+                      label={user.role} 
+                      color={user.role === 'admin' ? 'primary' : 'default'} 
+                      size="small" 
+                    />
                   </TableCell>
                   <TableCell>
                     <IconButton 
                       color="primary" 
-                      onClick={() => handleOpen(service)}
+                      onClick={() => handleOpen(user)}
                       size="small"
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton 
                       color="error" 
-                      onClick={() => handleDelete(service.id)}
+                      onClick={() => handleDelete(user.id)}
                       size="small"
                     >
                       <DeleteIcon />
@@ -228,7 +198,7 @@ export default function ServicesPage() {
 
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>
-          {currentService.id ? 'Edit Service' : 'Add Service'}
+          {currentUser.id ? 'Edit User' : 'Add User'}
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -238,46 +208,36 @@ export default function ServicesPage() {
             label="Name"
             fullWidth
             variant="outlined"
-            value={currentService.name}
+            value={currentUser.name}
             onChange={handleChange}
             sx={{ mt: 2, mb: 2 }}
           />
           <TextField
             margin="dense"
-            name="description"
-            label="Description"
+            name="email"
+            label="Email"
             fullWidth
             variant="outlined"
-            value={currentService.description}
+            value={currentUser.email}
             onChange={handleChange}
-            multiline
-            rows={4}
+            sx={{ mb: 2 }}
           />
-          
-          <Box sx={{ mb: 2 }}>
-            <input
-              accept="image/*"
-              style={{ display: 'none' }}
-              id="image-upload"
-              type="file"
-              name="image"
-              onChange={handleFileChange}
-            />
-            <label htmlFor="image-upload">
-              <Button variant="outlined" component="span" sx={{ mr: 2 }}>
-                Upload Image
-              </Button>
-            </label>
-            {imagePreview && (
-              <img src={imagePreview} alt="Preview" style={{ maxHeight: 100, marginLeft: 10 }} />
-            )}
-          </Box>
-        
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Role</InputLabel>
+            <Select
+              name="role"
+              value={currentUser.role}
+              onChange={handleChange}
+            >
+              <MenuItem value="user">User</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSubmit} variant="contained">
-            {currentService.id ? 'Update' : 'Create'}
+            {currentUser.id ? 'Update' : 'Create'}
           </Button>
         </DialogActions>
       </Dialog>

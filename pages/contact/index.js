@@ -69,7 +69,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-900 mb-2 text-lg">Address</h3>
-                      <p className="text-gray-600 leading-relaxed">123 Safety Street<br />Fire City, FC 12345<br />United States</p>
+                      <p className="text-gray-600 leading-relaxed">GF - 03, BHUMI ESTATE<br />Bs. DADA ESTATE, SARKHEJ<br />AHMEDABAD - 382 210</p>
                     </div>
                   </div>
 
@@ -79,8 +79,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-900 mb-2 text-lg">Phone</h3>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
-                      <p className="text-gray-600">+1 (555) 123-4568</p>
+                      <p className="text-gray-600">+91 99749 99995</p>
+                      <p className="text-gray-600">+91 81601 78244</p>
                     </div>
                   </div>
 
@@ -90,8 +90,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-900 mb-2 text-lg">Email</h3>
-                      <p className="text-gray-600">info@firesafety.com</p>
-                      <p className="text-gray-600">support@firesafety.com</p>
+                      <p className="text-gray-600">sales@safezonefire.info</p>
                     </div>
                   </div>
                 </div>

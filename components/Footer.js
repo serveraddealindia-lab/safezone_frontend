@@ -52,12 +52,12 @@ export default function Footer() {
                 <span className="text-white font-bold text-xl">FS</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-white font-bold text-xl">Fire Safety</span>
+                <span className="text-white font-bold text-xl">Safe Zone</span>
                 <span className="text-xs text-gray-400">Protecting Lives & Property</span>
               </div>
             </Link>
             <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
-              Leading provider of fire safety solutions. Protecting lives and property with innovative technology and expert service.
+              Leading provider of fire safety solutions. Protecting lives and property with innovative technology and expert service. GF - 03, BHUMI ESTATE, Bs. DADA ESTATE, SARKHEJ, AHMEDABAD - 382 210
             </p>
             <div className="flex space-x-3">
               <a href="#" className="w-11 h-11 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
@@ -102,7 +102,7 @@ export default function Footer() {
               </div>
               <div>
                 <p className="font-bold text-white mb-2 text-lg">Address</p>
-                <p className="text-sm text-gray-400 leading-relaxed">123 Safety Street<br />Fire City, FC 12345<br />United States</p>
+                <p className="text-sm text-gray-400 leading-relaxed">GF - 03, BHUMI ESTATE<br />Bs. DADA ESTATE, SARKHEJ<br />AHMEDABAD - 382 210</p>
               </div>
             </div>
             <div className="flex items-start space-x-4 group">
@@ -111,8 +111,8 @@ export default function Footer() {
               </div>
               <div>
                 <p className="font-bold text-white mb-2 text-lg">Phone</p>
-                <p className="text-sm text-gray-400">+1 (555) 123-4567</p>
-                <p className="text-sm text-gray-400">+1 (555) 123-4568</p>
+                <p className="text-sm text-gray-400">+91 99749 99995</p>
+                <p className="text-sm text-gray-400">+91 81601 78244</p>
               </div>
             </div>
             <div className="flex items-start space-x-4 group">
@@ -121,8 +121,7 @@ export default function Footer() {
               </div>
               <div>
                 <p className="font-bold text-white mb-2 text-lg">Email</p>
-                <p className="text-sm text-gray-400">info@firesafety.com</p>
-                <p className="text-sm text-gray-400">support@firesafety.com</p>
+                <p className="text-sm text-gray-400">sales@safezonefire.info</p>
               </div>
             </div>
           </div>

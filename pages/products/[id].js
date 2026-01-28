@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { ArrowLeft, Download, Check } from 'lucide-react';
+import { ArrowLeft, Download, Check, FileText } from 'lucide-react';
 import { productsAPI } from '../../lib/api';
 
 export default function ProductDetails() {
@@ -80,7 +80,8 @@ export default function ProductDetails() {
     specifications: {
       'Category': product.category?.name || 'N/A',
       'Image': product.image ? 'Available' : 'Not available',
-      'PDF': product.pdf ? 'Available' : 'Not available'
+      'PDF': product.pdf ? 'Available' : 'Not available',
+      'Datasheet': product.datasheet ? 'Available' : 'Not available'
     }
   };
 
@@ -160,6 +161,17 @@ export default function ProductDetails() {
                     <Download className="w-5 h-5 mr-2" />
                     Download Brochure
                   </button>
+                  {product.datasheet && (
+                    <a 
+                      href={product.datasheet} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex-1 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
+                    >
+                      <FileText className="w-5 h-5 mr-2" />
+                      Download Datasheet
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

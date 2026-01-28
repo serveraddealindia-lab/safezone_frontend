@@ -40,6 +40,7 @@ export default function Header() {
       ]
     },
     { name: 'Services', href: '/services' },
+    { name: 'Projects', href: '/projects' },
     { name: 'News', href: '/news' },
     { name: 'Careers', href: '/careers' },
     { name: 'Contact', href: '/contact' },
@@ -58,7 +59,7 @@ export default function Header() {
                 <span className="text-white font-black text-2xl">FS</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-black text-gray-900 leading-tight">FIRE SAFETY</span>
+                <span className="text-2xl font-black text-gray-900 leading-tight">SAFE ZONE</span>
                 <span className="text-xs text-gray-600 font-medium uppercase tracking-wider">PASSION TO PROTECT</span>
               </div>
             </Link>
@@ -192,7 +193,7 @@ export default function Header() {
                   <span className="text-white font-black">FS</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-black text-gray-900">FIRE SAFETY</span>
+                  <span className="font-black text-gray-900">SAFE ZONE</span>
                   <span className="text-xs text-gray-600 font-medium uppercase tracking-wider">PASSION TO PROTECT</span>
                 </div>
               </Link>

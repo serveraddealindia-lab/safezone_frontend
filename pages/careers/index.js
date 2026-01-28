@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { MapPin, Clock, Briefcase, ArrowRight } from 'lucide-react';
-import { careersAPI } from '../../lib/api';
 
 export default function CareersPage() {
   const [jobs, setJobs] = useState([]);
@@ -13,8 +12,9 @@ export default function CareersPage() {
     const fetchCareers = async () => {
       try {
         setLoading(true);
-        const response = await careersAPI.getAll();
-        setJobs(response.data);
+        const response = await fetch('http://localhost:5000/api/v1/careers');
+        const data = await response.json();
+        setJobs(data.data || []);
         setError(null);
       } catch (err) {
         console.error('Error fetching careers:', err);

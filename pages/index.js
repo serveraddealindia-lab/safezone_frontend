@@ -175,11 +175,11 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left Panel - About Text */}
             <div className="bg-white p-8 lg:p-16 flex flex-col justify-center">
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">About Fire Safety</h2>
+              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">About Safe Zone</h2>
               <p className="text-gray-700 text-lg leading-relaxed mb-4">
-                Headquartered in Dubai, Fire Safety Platform is a world-leading producer and supplier of top-tier firefighting equipment, 
+                Headquartered in Ahmedabad, Safe Zone is a world-leading producer and supplier of top-tier firefighting equipment, 
                 fire protection systems, fire alarms, security, and safety engineering systems. Our vision is to redefine safety standards 
-                and protect life, environment, and property.
+                and protect life, environment, and property. GF - 03, BHUMI ESTATE, Bs. DADA ESTATE, SARKHEJ, AHMEDABAD - 382 210
               </p>
               <p className="text-gray-700 text-lg leading-relaxed">
                 With decades of experience and innovation, we continue to set new benchmarks in fire safety technology and solutions.
@@ -199,10 +199,10 @@ export default function Home() {
           <div className="bg-white p-8 lg:p-16">
             <div className="max-w-md ml-auto">
               <div className="w-16 h-16 bg-red-600 rounded-lg flex items-center justify-center mb-6">
-                <span className="text-white font-black text-3xl">FS</span>
+                <span className="text-white font-black text-3xl">SZ</span>
               </div>
               <p className="text-xl lg:text-2xl font-semibold text-gray-900 mb-6">
-                Keeping you safe and your property secure is our business.
+                Keeping you safe and your property secure is our business. Contact: +91 99749 99995 | +91 81601 78244 | sales@safezonefire.info
               </p>
               <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden group">
                 <img 
@@ -284,7 +284,7 @@ export default function Home() {
                 "Fire Safety Platform enjoys a strong market position globally as a leading fire safety solution provider."
               </blockquote>
               <p className="text-xl lg:text-2xl text-white/90 font-semibold">
-                Eng. John Smith, Chief Executive Officer - Fire Safety Platform
+                Eng. John Smith, Chief Executive Officer - Safe Zone
               </p>
             </div>
           </div>
@@ -366,7 +366,7 @@ export default function Home() {
               {/* Left Red Box */}
               <div className="bg-red-700 p-8 lg:p-12 flex flex-col justify-between rounded-lg">
                 <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-8">
-                  <span className="text-red-600 font-black text-3xl">FS</span>
+                  <span className="text-red-600 font-black text-3xl">SZ</span>
                 </div>
                 <Link href="/projects" className="text-white hover:text-gray-200 font-semibold flex items-center text-lg">
                   Explore more projects <ArrowRight className="w-5 h-5 ml-2" />
@@ -516,7 +516,7 @@ export default function Home() {
                       className="mt-1 mr-3 w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                     />
                     <label htmlFor="consent" className="text-sm text-gray-700">
-                      I consent to Fire Safety Platform contacting me with news, service information and other updates
+                      I consent to Safe Zone contacting me with news, service information and other updates
                     </label>
                   </div>
                   <button

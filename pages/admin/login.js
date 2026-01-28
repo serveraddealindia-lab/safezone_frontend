@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Form, Input, Button, Card, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Container, Box, TextField, Button, Card, CardContent, Typography, Alert } from '@mui/material';
+import { AccountCircle, Lock } from '@mui/icons-material';
 import { authAPI } from '../../lib/api';
 import { setToken, isAuthenticated } from '../../lib/auth';
 
 export default function AdminLogin() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -15,80 +18,94 @@ export default function AdminLogin() {
     }
   }, [router]);
 
-  const onFinish = async (values) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+    setError('');
     try {
-      const response = await authAPI.login(values.email, values.password);
+      const response = await authAPI.login(email, password);
       setToken(response.data.token);
-      message.success('Login successful!');
       router.push('/admin/dashboard');
     } catch (error) {
-      message.error(error.response?.data?.error || 'Login failed');
+      setError(error.response?.data?.error || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    }}>
-      <Card style={{ width: 400, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 30 }}>
-          <h1 style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Admin Login</h1>
-          <p style={{ color: '#666' }}>Fire & Safety Platform</p>
-        </div>
-        <Form
-          name="login"
-          onFinish={onFinish}
-          autoComplete="off"
-          layout="vertical"
-        >
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
-            ]}
-          >
-            <Input 
-              prefix={<UserOutlined />} 
-              placeholder="Email"
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="Password"
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
-              block 
-              size="large"
-              loading={loading}
-            >
-              Login
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
-    </div>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          minHeight: '100vh',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          padding: 2,
+        }}
+      >
+        <Card sx={{ width: '100%', maxWidth: 400, boxShadow: 3 }}>
+          <CardContent sx={{ padding: 4 }}>
+            <Box sx={{ textAlign: 'center', mb: 3 }}>
+              <Typography component="h1" variant="h5" fontWeight="bold" mb={1}>
+                Admin Login
+              </Typography>
+              <Typography color="text.secondary">
+                Fire & Safety Platform
+              </Typography>
+            </Box>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                InputProps={{
+                  startAdornment: <AccountCircle sx={{ mr: 1, color: 'action.active' }} />,
+                }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: <Lock sx={{ mr: 1, color: 'action.active' }} />,
+                }}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2, py: 1.5 }}
+                disabled={loading}
+              >
+                {loading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
   );
 }
-

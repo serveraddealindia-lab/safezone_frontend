@@ -1,161 +1,285 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Space, Modal, Form, Input, message, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { 
+  Button, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle, 
+  TextField, 
+  Box, 
+  CircularProgress,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton
+} from '@mui/material';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import AdminLayout from '../../../components/AdminLayout';
-import ProtectedRoute from '../../../components/ProtectedRoute';
 import { marketsAPI } from '../../../lib/api';
 
-const { TextArea } = Input;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export default function MarketsPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState(null);
-  const [form] = Form.useForm();
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await marketsAPI.getAll();
-      setData(response.data);
-    } catch (error) {
-      message.error('Failed to fetch markets');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [markets, setMarkets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [currentMarket, setCurrentMarket] = useState({
+    id: null,
+    name: '',
+    description: '',
+    image: null
+  });
+  const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const handleAdd = () => {
-    setEditingRecord(null);
-    form.resetFields();
-    setModalVisible(true);
+  const fetchData = async () => {
+    try {
+      const response = await marketsAPI.getAll();
+      setMarkets(response.data);
+    } catch (err) {
+      setError('Failed to load markets');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = (record) => {
-    setEditingRecord(record);
-    form.setFieldsValue(record);
-    setModalVisible(true);
+  const handleOpen = (market = null) => {
+    if (market) {
+      setCurrentMarket({
+        id: market.id,
+        name: market.name,
+        description: market.description,
+        image: null
+      });
+      setImagePreview(market.image ? `${API_BASE_URL.replace('/api/v1', '')}/uploads/${market.image}` : '');
+    } else {
+      setCurrentMarket({
+        id: null,
+        name: '',
+        description: '',
+        image: null
+      });
+      setImagePreview('');
+    }
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentMarket(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    const file = files[0];
+    
+    if (file) {
+      setCurrentMarket(prev => ({
+        ...prev,
+        [name]: file
+      }));
+
+      // Preview for images
+      if (name === 'image') {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('name', currentMarket.name);
+    formData.append('description', currentMarket.description);
+    
+    if (currentMarket.image) {
+      formData.append('image', currentMarket.image);
+    }
+
+    try {
+      if (currentMarket.id) {
+        await marketsAPI.update(currentMarket.id, formData);
+      } else {
+        await marketsAPI.create(formData);
+      }
+      fetchData();
+      handleClose();
+    } catch (err) {
+      setError('Operation failed');
+      console.error(err);
+    }
   };
 
   const handleDelete = async (id) => {
-    try {
-      await marketsAPI.delete(id);
-      message.success('Market deleted successfully');
-      fetchData();
-    } catch (error) {
-      message.error('Failed to delete market');
-    }
-  };
-
-  const handleSubmit = async (values) => {
-    try {
-      if (editingRecord) {
-        await marketsAPI.update(editingRecord.id, values);
-        message.success('Market updated successfully');
-      } else {
-        await marketsAPI.create(values);
-        message.success('Market created successfully');
+    if (window.confirm('Are you sure you want to delete this market?')) {
+      try {
+        await marketsAPI.delete(id);
+        fetchData();
+      } catch (err) {
+        setError('Delete failed');
+        console.error(err);
       }
-      setModalVisible(false);
-      form.resetFields();
-      fetchData();
-    } catch (error) {
-      message.error(error.response?.data?.error || 'Operation failed');
     }
   };
 
-  const columns = [
-    { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Description', dataIndex: 'description', key: 'description', ellipsis: true },
-    { title: 'Image', dataIndex: 'image', key: 'image', render: (text) => text || '-' },
-    {
-      title: 'Actions',
-      key: 'actions',
-      width: 150,
-      render: (_, record) => (
-        <Space>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            size="small"
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure you want to delete this market?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button
-              type="primary"
-              danger
-              icon={<DeleteOutlined />}
-              size="small"
-            >
-              Delete
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+  if (loading) {
+    return (
+      <AdminLayout>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="500px">
+          <CircularProgress />
+        </Box>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout>
+        <Alert severity="error">{error}</Alert>
+      </AdminLayout>
+    );
+  }
 
   return (
-    <ProtectedRoute>
-      <AdminLayout>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-          <h1>Markets</h1>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleAdd}
-          >
-            Add Market
-          </Button>
-        </div>
-        <Table
-          columns={columns}
-          dataSource={data}
-          loading={loading}
-          rowKey="id"
-          pagination={{ pageSize: 10 }}
-        />
-        <Modal
-          title={editingRecord ? 'Edit Market' : 'Add Market'}
-          open={modalVisible}
-          onCancel={() => {
-            setModalVisible(false);
-            form.resetFields();
-          }}
-          onOk={() => form.submit()}
-          width={600}
+    <AdminLayout>
+      <Box sx={{ width: '100%', mt: 2 }}>
+        <Button 
+          variant="contained" 
+          onClick={() => handleOpen()}
+          sx={{ mb: 2 }}
         >
-          <Form form={form} onFinish={handleSubmit} layout="vertical">
-            <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ required: true, message: 'Please enter market name' }]}
-            >
-              <Input placeholder="Market name" />
-            </Form.Item>
-            <Form.Item name="description" label="Description">
-              <TextArea rows={4} placeholder="Market description" />
-            </Form.Item>
-            <Form.Item name="image" label="Image URL">
-              <Input placeholder="Image URL" />
-            </Form.Item>
-          </Form>
-        </Modal>
-      </AdminLayout>
-    </ProtectedRoute>
+          Add Market
+        </Button>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="markets table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Image</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {markets.map((market) => (
+                <TableRow
+                  key={market.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {market.id}
+                  </TableCell>
+                  <TableCell>{market.name}</TableCell>
+                  <TableCell>{market.description.substring(0, 50)}{market.description.length > 50 ? '...' : ''}</TableCell>
+                  <TableCell>
+                    {market.image ? (
+                      <img 
+                        src={`${API_BASE_URL.replace('/api/v1', '')}/uploads/${market.image}`} 
+                        alt={market.name} 
+                        style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
+                      />
+                    ) : (
+                      'No image'
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton 
+                      color="primary" 
+                      onClick={() => handleOpen(market)}
+                      size="small"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton 
+                      color="error" 
+                      onClick={() => handleDelete(market.id)}
+                      size="small"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {currentMarket.id ? 'Edit Market' : 'Add Market'}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="name"
+            label="Name"
+            fullWidth
+            variant="outlined"
+            value={currentMarket.name}
+            onChange={handleChange}
+            sx={{ mt: 2, mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="description"
+            label="Description"
+            fullWidth
+            variant="outlined"
+            value={currentMarket.description}
+            onChange={handleChange}
+            multiline
+            rows={4}
+          />
+                  
+          <Box sx={{ mb: 2 }}>
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="image-upload"
+              type="file"
+              name="image"
+              onChange={handleFileChange}
+            />
+            <label htmlFor="image-upload">
+              <Button variant="outlined" component="span" sx={{ mr: 2 }}>
+                Upload Image
+              </Button>
+            </label>
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" style={{ maxHeight: 100, marginLeft: 10 }} />
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained">
+            {currentMarket.id ? 'Update' : 'Create'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </AdminLayout>
   );
 }
-
