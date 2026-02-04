@@ -131,18 +131,37 @@ export default function ProductsPage() {
                             alt={product.name}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
+                          {product.datasheet && (
+                            <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-2">
+                              <a 
+                                href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/uploads/${product.datasheet}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex flex-col items-center text-center"
+                              >
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-1">
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                                <span className="text-xs text-gray-700 font-medium">Datasheet</span>
+                              </a>
+                            </div>
+                          )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
                         <div className="p-6 lg:p-8">
                           <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 group-hover:text-red-600 transition-colors">{product.name}</h3>
                           <p className="text-gray-600 mb-6 text-sm leading-relaxed line-clamp-2">{product.short_desc || product.description || 'Premium fire safety solution designed for maximum protection and reliability.'}</p>
-                          <Link
-                            href={`/products/${product.id}`}
-                            className="inline-flex items-center text-red-600 hover:text-red-700 font-semibold text-sm group/link"
-                          >
-                            View Details 
-                            <ArrowRight className="w-4 h-4 ml-2 group-hover/link:translate-x-1 transition-transform" />
-                          </Link>
+                          <div className="flex flex-wrap gap-2">
+                            <Link
+                              href={`/products/${product.id}`}
+                              className="inline-flex items-center text-red-600 hover:text-red-700 font-semibold text-sm group/link"
+                            >
+                              View Details 
+                              <ArrowRight className="w-4 h-4 ml-2 group-hover/link:translate-x-1 transition-transform" />
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     ))}

@@ -163,7 +163,7 @@ export default function ProductDetails() {
                   </button>
                   {product.datasheet && (
                     <a 
-                      href={product.datasheet} 
+                      href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/uploads/${product.datasheet}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex-1 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"

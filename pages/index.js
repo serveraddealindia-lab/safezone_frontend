@@ -1,355 +1,180 @@
-import { useEffect, useRef, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { gsap } from 'gsap';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import Link from 'next/link';
-import { ArrowRight, Search, Menu, Factory, Users, GraduationCap, Award, Quote } from 'lucide-react';
-import { bannersAPI, productsAPI } from '../lib/api';
+import { ArrowRight } from 'lucide-react';
+import AOS from 'aos';
 
 export default function Home() {
   const heroRef = useRef(null);
   const heroContentRef = useRef(null);
-  const [banners, setBanners] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('News');
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [bannersRes, productsRes] = await Promise.all([
-          bannersAPI.getAll(),
-          productsAPI.getAll()
-        ]);
-        setBanners(bannersRes.data);
-        setProducts(productsRes.data.slice(0, 6));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    AOS.refresh();
   }, []);
 
   useEffect(() => {
-    if (heroContentRef.current) {
-      const tl = gsap.timeline();
-      tl.from(heroContentRef.current.children, {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: 'power3.out'
-      });
-    }
+    if (!heroContentRef.current) return;
+    const el = heroContentRef.current;
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    const t = setTimeout(() => {
+      el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }, 100);
+    return () => clearTimeout(t);
   }, []);
 
-  const heroSlides = banners.length > 0 
-    ? banners.map(banner => ({
-        title: banner.title,
-        image: banner.image || 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&h=800&fit=crop'
-      }))
-    : [
-        {
-          title: 'THE WORLD\'S TALLEST MAN MADE STRUCTURE - BURJ KHALIFA PROTECTED BY FIRE SAFETY',
-          image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&h=800&fit=crop'
-        },
-        {
-          title: 'ADVANCED FIRE SAFETY SOLUTIONS FOR MODERN ARCHITECTURE',
-          image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=800&fit=crop'
-        }
-      ];
-
-  const news = [
-    {
-      id: 1,
-      title: 'Strategic Alliance: Fire Safety Platform Partners with Leading Technology Provider',
-      description: 'A groundbreaking partnership that redefines safety standards and innovation in fire protection systems.',
-      image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=400&fit=crop',
-      category: 'Partnership'
-    },
-    {
-      id: 2,
-      title: 'Fire Safety Platform Signs Major Deal Worth 200 Million AED',
-      description: 'A significant milestone in expanding our global reach and enhancing fire safety solutions worldwide.',
-      image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop',
-      category: 'Business'
-    },
-    {
-      id: 3,
-      title: 'Advancing Global Safety: Next-Gen Emergency Vehicles Partnership',
-      description: 'Commitment to advancing safety and innovation worldwide through strategic collaborations.',
-      image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop',
-      category: 'Innovation'
-    }
+  const stats = [
+    { value: '36+', label: 'Years Experience' },
+    { value: '1000+', label: 'Projects Completed' },
+    { value: '500+', label: 'Clients' },
+    { value: 'Pan India', label: 'Presence' },
   ];
 
-  const projects = [
-    {
-      title: 'ZAYED UNIVERSITY',
-      image: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800&h=600&fit=crop'
-    },
-    {
-      title: 'MUSEUM OF THE FUTURE',
-      image: 'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?w=800&h=600&fit=crop'
-    },
-    {
-      title: 'LOUVRE ABU DHABI',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop'
-    }
+  const featureCards = [
+    { title: 'Classic Highland' },
+    { title: 'S99 Project' },
+    { title: 'Daxidite Felicia' },
   ];
 
-  const markets = [
-    {
-      title: 'Hospitality & Leisure Fire Protection',
-      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop'
-    },
-    {
-      title: 'Healthcare and Education - Mobile Hospitals Fire Protection',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800&h=600&fit=crop'
-    }
+  const newsCards = [
+    { title: 'Real Project Installation', desc: 'Latest fire & safety installations across industrial and commercial sites.' },
+    { title: 'BITA Expo 2026', desc: 'Join us at BITA Expo for advanced fire protection solutions and live demos.' },
+    { title: 'BITA Expo 2026 – Day 1', desc: 'Day one highlights and key announcements from our exhibition stand.' },
+  ];
+
+  const industries = [
+    'Residential Fire Protection',
+    'Hospitality & Leisure',
+    'Government Buildings & Monuments',
+    'Industrial Fire Protection',
+    'Oil, Gas & Power',
+    'Hospitals & Critical Care',
+    'Educational Institutions',
+    'Public Services',
+    'Theatres & Amusement Parks',
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white font-sans">
       <Header />
-      <main>
-        {/* Hero Banner Swiper */}
-        <section ref={heroRef} className="relative h-[600px] lg:h-[700px] xl:h-[800px] overflow-hidden">
-          <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            spaceBetween={0}
-            slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 5000, disableOnInteraction: false }}
-            className="h-full hero-swiper"
-            speed={1000}
-            effect="fade"
-            onSlideChange={(swiper) => {
-              const activeSlide = swiper.slides[swiper.activeIndex];
-              const content = activeSlide.querySelector('.hero-content');
-              if (content) {
-                gsap.from(content.children, {
-                  y: 50,
-                  opacity: 0,
-                  duration: 0.8,
-                  stagger: 0.15,
-                  ease: 'power3.out'
-                });
-              }
-            }}
-          >
-            {heroSlides.map((slide, index) => (
-              <SwiperSlide key={index}>
-                <div className="relative h-full group">
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center hero-image"
-                    style={{ backgroundImage: `url(${slide.image})` }}
+      <main className="w-full">
+        {/* SECTION 1 — HERO BANNER */}
+        <section
+          ref={heroRef}
+          className="relative w-full h-[60vh] min-h-[400px] md:h-[80vh] md:min-h-[520px] overflow-hidden bg-neutral-800"
+        >
+          <div className="absolute inset-0 bg-cover bg-center image-zoom-hero bg-neutral-700">
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+          </div>
+          <div className="absolute inset-0 flex items-center z-10">
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div ref={heroContentRef} className="max-w-2xl">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-4">
+                  Serving & Protecting Across India
+                </h1>
+                <p className="text-lg md:text-xl text-white/90 font-medium mb-8">
+                  Advanced Fire & Safety Solutions
+                </p>
+                <Link
+                  href="/services"
+                  className="inline-flex items-center bg-[#c40000] hover:bg-[#a30000] text-white font-semibold px-6 py-3.5 transition-all duration-300 ease-out"
+                >
+                  Explore Solutions <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 2 — ABOUT + STATS */}
+        <section className="w-full bg-white py-16 md:py-20 lg:py-24">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              <div data-aos="fade-up">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black mb-6">
+                  About Us
+                </h2>
+                <p className="text-gray-600 text-base md:text-lg leading-relaxed max-w-xl">
+                  We are a leading fire protection company serving all over India.
+                  Our mission is safety, innovation and reliable engineering.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                {stats.map((stat, i) => (
+                  <div
+                    key={stat.label}
+                    data-aos="fade-up"
+                    data-aos-delay={i * 80}
+                    className="bg-[#c40000] text-white p-6 md:p-8 transition-shadow duration-300 hover:shadow-lg"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/40 hero-overlay" />
+                    <p className="text-2xl md:text-3xl font-bold mb-1">{stat.value}</p>
+                    <p className="text-sm md:text-base font-medium text-white/90">{stat.label}</p>
                   </div>
-                  <div className="relative h-full flex items-center z-10">
-                    <div className="container mx-auto px-4 lg:px-6 text-white">
-                      <div ref={index === 0 ? heroContentRef : null} className="hero-content max-w-4xl">
-                        <h1 className="text-4xl lg:text-6xl xl:text-7xl font-black uppercase leading-tight mb-6 tracking-tight hero-title">
-                          {slide.title}
-                        </h1>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </section>
-
-        {/* About Section */}
-        <section className="bg-white">
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            {/* Left Panel - About Text */}
-            <div className="bg-white p-8 lg:p-16 flex flex-col justify-center">
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">About Safe Zone</h2>
-              <p className="text-gray-700 text-lg leading-relaxed mb-4">
-                Headquartered in Ahmedabad, Safe Zone is a world-leading producer and supplier of top-tier firefighting equipment, 
-                fire protection systems, fire alarms, security, and safety engineering systems. Our vision is to redefine safety standards 
-                and protect life, environment, and property. GF - 03, BHUMI ESTATE, Bs. DADA ESTATE, SARKHEJ, AHMEDABAD - 382 210
-              </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                With decades of experience and innovation, we continue to set new benchmarks in fire safety technology and solutions.
-              </p>
-            </div>
-
-            {/* Right Panel - Years */}
-            <div className="bg-red-600 p-8 lg:p-16 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-8xl lg:text-9xl font-black text-white">30+</p>
-                <p className="text-2xl lg:text-3xl font-bold text-white mt-4">years</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Right Section */}
-          <div className="bg-white p-8 lg:p-16">
-            <div className="max-w-md ml-auto">
-              <div className="w-16 h-16 bg-red-600 rounded-lg flex items-center justify-center mb-6">
-                <span className="text-white font-black text-3xl">SZ</span>
-              </div>
-              <p className="text-xl lg:text-2xl font-semibold text-gray-900 mb-6">
-                Keeping you safe and your property secure is our business. Contact: +91 99749 99995 | +91 81601 78244 | sales@safezonefire.info
-              </p>
-              <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden group">
-                <img 
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=400&fit=crop" 
-                  alt="Team" 
-                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Statistics & Mission Section */}
-        <section className="bg-white">
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            {/* Left - Building Image */}
-            <div className="h-[600px] lg:h-[700px] bg-gray-200 overflow-hidden group">
-              <img 
-                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=700&fit=crop" 
-                alt="Facility" 
-                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-
-            {/* Right - Statistics */}
-            <div className="bg-white p-8 lg:p-16 flex flex-col justify-center">
-              <div className="grid grid-cols-2 gap-8 mb-12">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Factory className="w-8 h-8 text-red-600" />
-                  </div>
-                  <p className="text-3xl lg:text-4xl font-black text-gray-900 mb-2">11M</p>
-                  <p className="text-sm lg:text-base text-gray-600 uppercase tracking-wide">ft² Facilities</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-red-600" />
-                  </div>
-                  <p className="text-3xl lg:text-4xl font-black text-gray-900 mb-2">20,000</p>
-                  <p className="text-sm lg:text-base text-gray-600 uppercase tracking-wide">Employees</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <GraduationCap className="w-8 h-8 text-red-600" />
-                  </div>
-                  <p className="text-3xl lg:text-4xl font-black text-gray-900 mb-2">3,500</p>
-                  <p className="text-sm lg:text-base text-gray-600 uppercase tracking-wide">Engineers</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Award className="w-8 h-8 text-red-600" />
-                  </div>
-                  <p className="text-3xl lg:text-4xl font-black text-gray-900 mb-2">1,000+</p>
-                  <p className="text-sm lg:text-base text-gray-600 uppercase tracking-wide">Certified Products</p>
-                </div>
-              </div>
-
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                Serving over 100 countries - Passion to Protect
-              </h2>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                Our passion to protect and save lives globally drives everything we do. Our high-quality products safeguard lives, 
-                environment, and property, ensuring safety standards are met and exceeded worldwide.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Quote Section */}
-        <section className="bg-red-600 py-16 lg:py-24">
-          <div className="container mx-auto px-4 lg:px-6">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-8">
-                <Quote className="w-12 h-12 text-white" />
-              </div>
-              <blockquote className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-8 leading-relaxed">
-                "Fire Safety Platform enjoys a strong market position globally as a leading fire safety solution provider."
-              </blockquote>
-              <p className="text-xl lg:text-2xl text-white/90 font-semibold">
-                Eng. John Smith, Chief Executive Officer - Safe Zone
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Keep Up To Date Section */}
-        <section className="bg-black text-white">
-          <div className="container mx-auto px-4 lg:px-6 py-12 lg:py-16">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6 lg:mb-0">Keep up to date</h2>
-              <div className="flex items-center space-x-1 mb-6 lg:mb-0">
-                <button
-                  onClick={() => setActiveTab('News')}
-                  className={`px-6 py-3 font-semibold transition-colors ${
-                    activeTab === 'News' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  News
-                </button>
-                <button
-                  onClick={() => setActiveTab('Events')}
-                  className={`px-6 py-3 font-semibold transition-colors ${
-                    activeTab === 'Events' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Events
-                </button>
-                <button
-                  onClick={() => setActiveTab('Invitations')}
-                  className={`px-6 py-3 font-semibold transition-colors ${
-                    activeTab === 'Invitations' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Invitations
-                </button>
-              </div>
-              <Link href="/news" className="text-red-500 hover:text-red-400 font-semibold flex items-center">
-                See All <ArrowRight className="w-5 h-5 ml-2" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {news.map((item, index) => (
-                <article
-                  key={item.id}
+        {/* SECTION 3 — FEATURE SHOWCASE */}
+        <section className="w-full bg-white py-16 md:py-20 lg:py-24">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black text-center mb-12 md:mb-16">
+              Serving All Over India – For A Safer World
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+              {featureCards.map((card, i) => (
+                <div
+                  key={card.title}
                   data-aos="fade-up"
-                  data-aos-delay={index * 100}
-                  className="bg-gray-900 rounded-lg overflow-hidden hover:bg-gray-800 transition-all duration-300 group"
+                  data-aos-delay={i * 100}
+                  className="group relative overflow-hidden bg-neutral-200 aspect-[4/3] shadow-md hover:shadow-xl transition-all duration-300"
                 >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-neutral-300 flex items-center justify-center text-gray-500 text-sm image-zoom">
+                    Image
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-red-400 transition-colors">{item.title}</h3>
-                    <p className="text-gray-400 mb-4 text-sm leading-relaxed line-clamp-3">{item.description}</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+                    <h3 className="text-lg md:text-xl font-bold text-white drop-shadow">
+                      {card.title}
+                    </h3>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4 — KEEP UP TO DATE */}
+        <section className="w-full bg-neutral-50 py-16 md:py-20 lg:py-24">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black mb-12 md:mb-16">
+              Keep Up To Date
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+              {newsCards.map((card, i) => (
+                <article
+                  key={card.title}
+                  data-aos="fade-up"
+                  data-aos-delay={i * 100}
+                  className="bg-white overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="aspect-video bg-neutral-200 flex items-center justify-center text-gray-500 text-sm image-zoom overflow-hidden">
+                    Image
+                  </div>
+                  <div className="p-5 md:p-6">
+                    <h3 className="text-lg font-bold text-black mb-2">{card.title}</h3>
+                    <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4 line-clamp-3">
+                      {card.desc}
+                    </p>
                     <Link
                       href="/news"
-                      className="inline-flex items-center text-red-500 hover:text-red-400 font-semibold text-sm group/link"
+                      className="inline-flex items-center text-[#c40000] font-semibold text-sm hover:text-[#a30000] transition-colors"
                     >
-                      Read More <ArrowRight className="w-4 h-4 ml-2 group-hover/link:translate-x-1 transition-transform" />
+                      Read More <ArrowRight className="w-4 h-4 ml-1" />
                     </Link>
                   </div>
                 </article>
@@ -358,179 +183,166 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Prestigious Projects Section */}
-        <section className="bg-red-600 text-white">
-          <div className="container mx-auto px-4 lg:px-6 py-12 lg:py-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-12">Prestigious Projects</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-              {/* Left Red Box */}
-              <div className="bg-red-700 p-8 lg:p-12 flex flex-col justify-between rounded-lg">
-                <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mb-8">
-                  <span className="text-red-600 font-black text-3xl">SZ</span>
-                </div>
-                <Link href="/projects" className="text-white hover:text-gray-200 font-semibold flex items-center text-lg">
-                  Explore more projects <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </div>
-
-              {/* Project Images */}
-              {projects.map((project, index) => (
-                <div
-                  key={index}
-                  className="relative h-64 lg:h-80 rounded-lg overflow-hidden group cursor-pointer"
-                >
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 transition-all duration-300" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6 transform group-hover:translate-y-0 translate-y-2 transition-transform duration-300">
-                    <h3 className="text-xl lg:text-2xl font-bold text-white uppercase group-hover:text-red-400 transition-colors">{project.title}</h3>
+        {/* SECTION 5 — PRESTIGIOUS PROJECTS (NAFFCO layout: 2 top with title below image; 1 wide with overlay + Explore this project; red Explore more button) */}
+        <section className="w-full bg-white py-16 md:py-20 lg:py-24">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="text-right text-[#c40000] text-sm font-semibold uppercase tracking-wider mb-6 lg:mb-8">
+              Prestigious Projects
+            </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-6 lg:mb-8">
+              {/* Top row: two cards — large image, title BELOW image (small font) */}
+              <div data-aos="fade-up" data-aos-delay="0" className="group overflow-hidden">
+                <div className="relative aspect-[16/10] lg:aspect-[16/9] bg-neutral-200 overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm image-zoom">
+                    Image
                   </div>
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-              ))}
+                <p className="mt-3 text-sm text-gray-600 font-medium uppercase tracking-wide">Project One</p>
+              </div>
+              <div data-aos="fade-up" data-aos-delay="100" className="group overflow-hidden">
+                <div className="relative aspect-[16/10] lg:aspect-[16/9] bg-neutral-200 overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm image-zoom">
+                    Image
+                  </div>
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+                <p className="mt-3 text-sm text-gray-600 font-medium uppercase tracking-wide">Project Two</p>
+              </div>
             </div>
-          </div>
-        </section>
-
-        {/* Markets Section */}
-        <section className="bg-white py-16 lg:py-24">
-          <div className="container mx-auto px-4 lg:px-6">
-            <div className="mb-8">
-              <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">TOP END-USER INDUSTRIES</p>
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">Markets</h2>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              {/* Left Panel */}
-              <div className="lg:col-span-1">
-                <p className="text-gray-700 text-lg leading-relaxed mb-6">
-                  Our expertise in providing solutions for fire protection and life safety objectives spans across multiple industries.
+            {/* Bottom: one full-width card — overlay title + description + Explore this project → */}
+            <div data-aos="fade-up" data-aos-delay="200" className="group relative overflow-hidden aspect-[21/9] lg:aspect-[3/1] bg-neutral-200 mb-8">
+              <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm image-zoom">
+                Image
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-10 flex flex-col justify-end">
+                <h3 className="text-xl lg:text-3xl font-bold text-white uppercase mb-2">Project Three</h3>
+                <p className="text-white/90 text-sm lg:text-base max-w-2xl mb-4">
+                  Comprehensive fire protection and life safety systems for a landmark facility. Engineered solutions delivering unmatched safety standards.
                 </p>
-                <Link href="/markets" className="text-red-600 hover:text-red-700 font-semibold flex items-center">
-                  See All <ArrowRight className="w-5 h-5 ml-2" />
+                <Link href="/projects" className="inline-flex items-center text-white font-semibold hover:text-white/90 transition-colors w-fit">
+                  Explore this project <ArrowRight className="w-5 h-5 ml-1" />
                 </Link>
               </div>
-
-              {/* Market Images */}
-              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                {markets.map((market, index) => (
-                  <div
-                    key={index}
-                    className="relative h-64 lg:h-80 rounded-lg overflow-hidden group cursor-pointer"
-                  >
-                    <img
-                      src={market.image}
-                      alt={market.title}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30 group-hover:from-black/70 group-hover:via-black/40 transition-all duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 transform group-hover:translate-y-0 translate-y-2 transition-transform duration-300">
-                      <h3 className="text-xl lg:text-2xl font-bold text-white group-hover:text-red-400 transition-colors">{market.title}</h3>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
-          </div>
-        </section>
-
-        {/* Products Section - Similar to NAFFCO */}
-        <section className="bg-gray-50 py-16 lg:py-24">
-          <div className="container mx-auto px-4 lg:px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Our Products</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">Comprehensive fire safety solutions for every application</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-              {products.slice(0, 6).map((product, index) => (
-                <div
-                  key={product.id}
-                  data-aos="fade-up"
-                  data-aos-delay={index * 100}
-                  className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-3 group border border-gray-100"
-                >
-                  <div className="relative h-72 overflow-hidden bg-gray-100">
-                    <img
-                      src={product.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop'}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                  <div className="p-6 lg:p-8">
-                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 group-hover:text-red-600 transition-colors">{product.name}</h3>
-                    <p className="text-gray-600 mb-6 text-sm leading-relaxed line-clamp-2">{product.short_desc || product.description || 'Premium fire safety solution designed for maximum protection and reliability.'}</p>
-                    <Link
-                      href={`/products/${product.id}`}
-                      className="inline-flex items-center text-red-600 hover:text-red-700 font-semibold text-sm group/link"
-                    >
-                      View Details 
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover/link:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
+            <div data-aos="fade-up" className="flex justify-start">
               <Link
-                href="/products"
-                className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+                href="/projects"
+                className="inline-flex items-center bg-[#c40000] hover:bg-[#a30000] text-white font-semibold px-6 py-3 transition-all duration-300"
               >
-                View All Products <ArrowRight className="w-5 h-5 ml-2" />
+                Explore more projects <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Newsletter Section */}
-        <section className="bg-white py-12 lg:py-16 border-t border-gray-200">
-          <div className="container mx-auto px-4 lg:px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-              <div>
-                <p className="text-xl lg:text-2xl font-semibold text-gray-900">
-                  Subscribe to stay up to date on all the latest news
+        {/* SECTION 6 — MARKETS WE SERVE: left image + right writeup; then right image + left writeup; 9 numbered list */}
+        <section className="w-full bg-neutral-50 py-16 md:py-20 lg:py-24">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Row 1: Left = image, Right = heading + paragraph + 9 numbered list */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-16 lg:mb-20">
+              <div data-aos="fade-up" data-aos-delay="0" className="order-2 lg:order-1">
+                <div className="relative aspect-[4/3] bg-neutral-200 rounded overflow-hidden group">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm image-zoom">
+                    Image
+                  </div>
+                </div>
+              </div>
+              <div data-aos="fade-up" data-aos-delay="100" className="order-1 lg:order-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-black mb-6">
+                  Markets We Serve
+                </h2>
+                <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8">
+                  Our expertise in providing fire protection solutions across Western India
+                  ensures unmatched safety standards.
+                </p>
+                <ul className="space-y-3 md:space-y-4">
+                  {industries.slice(0, 9).map((item, i) => (
+                    <li
+                      key={item}
+                      data-aos="fade-up"
+                      data-aos-delay={100 + i * 40}
+                      className="flex items-center gap-3 text-black font-medium"
+                    >
+                      <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-[#c40000] text-white text-sm font-bold rounded">
+                        {i + 1}
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            {/* Row 2: Left = writeup, Right = image */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              <div data-aos="fade-up" data-aos-delay="0">
+                <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                  We deliver fire safety solutions for residential, commercial, industrial, and public sector clients. Our certified systems and Pan India presence support projects from design to commissioning and maintenance.
                 </p>
               </div>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                    />
+              <div data-aos="fade-up" data-aos-delay="100">
+                <div className="relative aspect-[4/3] bg-neutral-200 rounded overflow-hidden group">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm image-zoom">
+                    Image
                   </div>
-                  <div className="flex items-start">
-                    <input
-                      type="checkbox"
-                      id="consent"
-                      className="mt-1 mr-3 w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
-                    />
-                    <label htmlFor="consent" className="text-sm text-gray-700">
-                      I consent to Safe Zone contacting me with news, service information and other updates
-                    </label>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
-                  >
-                    Subscribe Now <ArrowRight className="w-5 h-5 ml-2" />
-                  </button>
-                </form>
+                </div>
               </div>
             </div>
           </div>
         </section>
+
+        {/* Subscribe Newsletter — NAFFCO style: two-line heading, underline inputs, checkbox, triangular Subscribe Now button */}
+        <section className="w-full bg-gray-100 py-12 lg:py-16 border-t border-gray-200">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+              <h2 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight">
+                Subscribe to stay up to date on<br />all the latest news
+              </h2>
+              <form className="space-y-5 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <input
+                      type="text"
+                      className="w-full py-2 border-0 border-b border-gray-800 bg-transparent focus:ring-0 focus:border-[#c40000] outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      className="w-full py-2 border-0 border-b border-gray-800 bg-transparent focus:ring-0 focus:border-[#c40000] outline-none"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="consent"
+                    className="mt-1 w-4 h-4 text-[#c40000] border-gray-400 rounded focus:ring-[#c40000]"
+                  />
+                  <label htmlFor="consent" className="text-sm text-gray-700">
+                    I consent to Safe Zone contacting me with news, service information and other updates
+                  </label>
+                </div>
+                <div className="flex justify-end sm:justify-start">
+                  <button
+                    type="submit"
+                    className="subscribe-now-btn inline-flex items-center bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold pl-8 pr-5 py-3 transition-all duration-300 relative overflow-visible"
+                    style={{ clipPath: 'polygon(12px 0, 100% 0, 100% 100%, 12px 100%, 0 50%)' }}
+                  >
+                    <span className="flex items-center">
+                      Subscribe Now <ArrowRight className="w-5 h-5 ml-2" />
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
       </main>
+
       <Footer />
     </div>
   );
