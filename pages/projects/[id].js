@@ -68,7 +68,7 @@ export default function ProjectDetails() {
   const projectData = {
     title: project.title,
     location: `${project.location}, ${project.country}`,
-    image: project.image || 'https://via.placeholder.com/800x600/DC2626/FFFFFF?text=Project+Image',
+    image: project.image || 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=600&fit=crop',
     description: project.description || 'No description available',
     status: project.status,
     year: project.year || 'N/A',

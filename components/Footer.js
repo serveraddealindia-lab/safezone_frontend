@@ -43,8 +43,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-gradient-to-b from-gray-900 to-black text-gray-300">
-      <div className="container mx-auto px-4 lg:px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-12">
+      <div className="container mx-auto px-4 lg:px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-8">
           {/* Company Info */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center space-x-3 mb-6 group">
@@ -92,8 +92,8 @@ export default function Footer() {
         </div>
 
         {/* Offices + Contact */}
-        <div className="border-t border-gray-800 pt-12">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-12">
+        <div className="border-t border-gray-800 pt-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
             <div>
               <p className="font-bold text-white mb-4 text-lg">Offices:</p>
               <div className="flex flex-wrap gap-6">
@@ -134,8 +134,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="border-t border-gray-800 pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0 pb-6">
             <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} Safe Zone. All rights reserved.</p>
             <div className="flex space-x-6 text-sm text-gray-400">
               <Link href="/privacy" className="hover:text-[#c40000] transition-colors">Privacy Policy</Link>

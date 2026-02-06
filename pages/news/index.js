@@ -9,7 +9,7 @@ export default function NewsPage() {
       id: 1,
       title: 'New Fire Safety Regulations 2024',
       excerpt: 'Stay updated with the latest fire safety regulations and compliance requirements for commercial buildings.',
-      image: 'https://via.placeholder.com/600x400/DC2626/FFFFFF?text=News+1',
+      image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop',
       date: 'March 15, 2024',
       category: 'Regulations'
     },
@@ -17,7 +17,7 @@ export default function NewsPage() {
       id: 2,
       title: 'Innovations in Fire Detection Technology',
       excerpt: 'Discover the latest advancements in fire detection and alarm systems that are revolutionizing safety.',
-      image: 'https://via.placeholder.com/600x400/991B1B/FFFFFF?text=News+2',
+      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=400&fit=crop',
       date: 'March 10, 2024',
       category: 'Technology'
     },
@@ -25,7 +25,7 @@ export default function NewsPage() {
       id: 3,
       title: 'Emergency Response Best Practices',
       excerpt: 'Learn essential emergency response procedures and safety protocols for your organization.',
-      image: 'https://via.placeholder.com/600x400/B91C1C/FFFFFF?text=News+3',
+      image: 'https://images.unsplash.com/photo-1581092918056-0d45945d7a4a?w=600&h=400&fit=crop',
       date: 'March 5, 2024',
       category: 'Safety'
     },
@@ -33,7 +33,7 @@ export default function NewsPage() {
       id: 4,
       title: 'Fire Safety Training Program Launch',
       excerpt: 'New comprehensive fire safety training program now available for businesses and organizations.',
-      image: 'https://via.placeholder.com/600x400/7F1D1D/FFFFFF?text=News+4',
+      image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop',
       date: 'February 28, 2024',
       category: 'Training'
     },
@@ -41,7 +41,7 @@ export default function NewsPage() {
       id: 5,
       title: 'Smart Fire Safety Systems Integration',
       excerpt: 'How IoT and smart technology are enhancing fire safety system monitoring and response.',
-      image: 'https://via.placeholder.com/600x400/DC2626/FFFFFF?text=News+5',
+      image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop',
       date: 'February 20, 2024',
       category: 'Technology'
     },
@@ -49,7 +49,7 @@ export default function NewsPage() {
       id: 6,
       title: 'Annual Fire Safety Compliance Checklist',
       excerpt: 'Complete checklist to ensure your facility meets all fire safety compliance requirements.',
-      image: 'https://via.placeholder.com/600x400/991B1B/FFFFFF?text=News+6',
+      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=400&fit=crop',
       date: 'February 15, 2024',
       category: 'Compliance'
     },
