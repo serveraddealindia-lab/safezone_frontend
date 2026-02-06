@@ -68,7 +68,7 @@ export default function ProductDetails() {
   const productData = {
     name: product.name,
     category: product.category?.name || 'Uncategorized',
-    image: product.image || 'https://via.placeholder.com/800x600/DC2626/FFFFFF?text=Product+Image',
+    image: product.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop',
     description: product.short_desc || 'No description available',
     longDescription: product.long_desc || product.short_desc || 'Detailed description coming soon.',
     features: [

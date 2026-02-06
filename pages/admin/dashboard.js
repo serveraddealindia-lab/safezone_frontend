@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Paper, Grid, Typography, Box, CircularProgress } from '@mui/material';
 import AdminLayout from '../../components/AdminLayout';
-import { api } from '../../lib/api';
+import api from '../../lib/api';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({});

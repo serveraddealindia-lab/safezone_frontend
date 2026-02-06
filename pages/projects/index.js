@@ -77,7 +77,9 @@ export default function ProjectsPage() {
       id: `placeholder-${displayProjects.length}`,
       title: `Project ${displayProjects.length + 1}`,
       description: 'Comprehensive fire protection and life safety systems for a landmark facility.',
-      image: `https://via.placeholder.com/${displayProjects.length === 2 ? '800x400' : '400x300'}/DC2626/FFFFFF?text=Project+${displayProjects.length + 1}`,
+      image: displayProjects.length === 2 
+        ? "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&h=400&fit=crop"
+        : `https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop`,
       location: 'UAE',
       year: '2024'
     });

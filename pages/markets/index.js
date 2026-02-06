@@ -8,42 +8,42 @@ export default function MarketsPage() {
       name: 'Commercial Buildings',
       icon: Building2,
       description: 'Comprehensive fire safety solutions for office buildings, retail spaces, and commercial facilities.',
-      image: 'https://via.placeholder.com/600x400/DC2626/FFFFFF?text=Commercial',
+      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop',
       features: ['Fire detection systems', 'Sprinkler installation', 'Emergency lighting', 'Regular maintenance']
     },
     {
       name: 'Industrial Facilities',
       icon: Factory,
       description: 'Specialized fire protection for manufacturing plants, warehouses, and industrial complexes.',
-      image: 'https://via.placeholder.com/600x400/991B1B/FFFFFF?text=Industrial',
+      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&h=400&fit=crop',
       features: ['Hazardous area protection', 'Explosion-proof systems', 'Custom solutions', '24/7 monitoring']
     },
     {
       name: 'Residential Complexes',
       icon: Home,
       description: 'Reliable fire safety systems for apartments, condominiums, and residential developments.',
-      image: 'https://via.placeholder.com/600x400/B91C1C/FFFFFF?text=Residential',
+      image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop',
       features: ['Smoke detection', 'Fire alarms', 'Emergency exits', 'Resident training']
     },
     {
       name: 'Healthcare Facilities',
       icon: Hospital,
       description: 'Critical fire safety systems designed for hospitals, clinics, and medical centers.',
-      image: 'https://via.placeholder.com/600x400/7F1D1D/FFFFFF?text=Healthcare',
+      image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop',
       features: ['Life safety systems', 'Code compliance', 'Minimal disruption', 'Specialized equipment']
     },
     {
       name: 'Educational Institutions',
       icon: GraduationCap,
       description: 'Safe learning environments with comprehensive fire safety for schools and universities.',
-      image: 'https://via.placeholder.com/600x400/DC2626/FFFFFF?text=Education',
+      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop',
       features: ['Student safety', 'Fire drills', 'Emergency planning', 'Compliance standards']
     },
     {
       name: 'Hospitality Sector',
       icon: Hotel,
       description: 'Guest safety and property protection for hotels, resorts, and hospitality venues.',
-      image: 'https://via.placeholder.com/600x400/991B1B/FFFFFF?text=Hospitality',
+      image: 'https://images.unsplash.com/photo-1615529182904-14819c35db37?w=600&h=400&fit=crop',
       features: ['Guest safety', 'Property protection', 'Emergency response', 'Staff training']
     },
   ];
