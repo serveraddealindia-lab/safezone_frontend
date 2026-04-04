@@ -5,6 +5,9 @@ import Footer from '../../components/Footer';
 import { ArrowLeft, Download, Check, FileText } from 'lucide-react';
 import { productsAPI } from '../../lib/api';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+
+
 export default function ProductDetails() {
   const router = useRouter();
   const { id } = router.query;
@@ -69,7 +72,7 @@ export default function ProductDetails() {
     name: product.name,
     category: product.category?.name || 'Uncategorized',
     image: product.image 
-      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/uploads/${product.image}`
+      ? `${API_BASE_URL.replace('/api/v1', '') || 'http://localhost:5000'}/uploads/${product.image}`
       : 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop',
     description: product.short_desc || 'No description available',
     longDescription: product.long_desc || product.short_desc || 'Detailed description coming soon.',
@@ -165,7 +168,7 @@ export default function ProductDetails() {
                   </button>
                   {product.datasheet && (
                     <a 
-                      href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/uploads/${product.datasheet}`} 
+                      href={`${API_BASE_URL.replace('/api/v1', '') || 'http://localhost:5000'}/uploads/${product.datasheet}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex-1 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"

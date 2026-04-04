@@ -6,12 +6,12 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { productsAPI, categoriesAPI } from '../../lib/api';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 function getImageUrl(image) {
   if (!image) return 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop';
   if (image.startsWith('http')) return image;
-  return `${API_BASE}/uploads/${image}`;
+  return `${API_BASE_URL.replace('/api/v1', '')}/uploads/${image}`;
 }
 
 export default function ProductsPage() {
@@ -135,7 +135,7 @@ export default function ProductsPage() {
                           {product.datasheet && (
                             <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-2">
                               <a 
-                                href={`${API_BASE}/uploads/${product.datasheet}`} 
+                                href={`${API_BASE_URL.replace('/api/v1', '')}/uploads/${product.datasheet}`} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="flex flex-col items-center text-center"
