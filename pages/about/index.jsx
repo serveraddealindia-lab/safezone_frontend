@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import styles from '../styles/about.module.css';
+import styles from '../../styles/about.module.css';
+import SiteLayout from '../../components/SiteLayout';
 
 // ── Animated Counter ──────────────────────────────────────────────
 function CountUp({ end, suffix = '', duration = 2500 }) {
@@ -91,7 +92,7 @@ export default function AboutUs() {
   const [activeTab, setActiveTab] = useState('vision');
 
   return (
-    <>
+   <SiteLayout>
       <Head>
         <title>About Us | Your Company</title>
         <meta name="description" content="Learn about our passion to protect — world-leading fire safety solutions since 1991." />
@@ -388,6 +389,6 @@ export default function AboutUs() {
         </section>
 
       </main>
-    </>
+    </SiteLayout>
   );
 }
