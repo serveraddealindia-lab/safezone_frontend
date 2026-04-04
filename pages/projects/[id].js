@@ -151,7 +151,7 @@ export default function ProjectDetails() {
                   <ul className="space-y-2">
                     {projectData.features.map((feature, index) => (
                       <li key={index} className="flex items-start">
-                        <div className="w-2 h-2 bg-red-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div className="w-2 h-2 bg-[var(--sz-brand)] rounded-full mt-2 mr-3 flex-shrink-0"></div>
                         <span className="text-gray-700">{feature}</span>
                       </li>
                     ))}
@@ -160,7 +160,7 @@ export default function ProjectDetails() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="flex-1 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                  <button className="flex-1 bg-[var(--sz-brand)] hover:bg-[var(--sz-brand-hover)] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
                     Learn More
                   </button>
                   <button className="flex-1 border-2 border-red-600 text-red-600 hover:bg-red-50 px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">

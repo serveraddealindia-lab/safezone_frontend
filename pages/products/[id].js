@@ -68,7 +68,9 @@ export default function ProductDetails() {
   const productData = {
     name: product.name,
     category: product.category?.name || 'Uncategorized',
-    image: product.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop',
+    image: product.image 
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/uploads/${product.image}`
+      : 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop',
     description: product.short_desc || 'No description available',
     longDescription: product.long_desc || product.short_desc || 'Detailed description coming soon.',
     features: [
@@ -154,7 +156,7 @@ export default function ProductDetails() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="flex-1 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                  <button className="flex-1 bg-[var(--sz-brand)] hover:bg-[var(--sz-brand-hover)] text-white px-8 py-3 rounded-lg font-semibold transition-colors">
                     Request Quote
                   </button>
                   <button className="flex-1 border-2 border-red-600 text-red-600 hover:bg-red-50 px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">

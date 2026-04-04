@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import SiteLayout from '../../components/SiteLayout';
+import PageHero from '../../components/PageHero';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { productsAPI, categoriesAPI } from '../../lib/api';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+function getImageUrl(image) {
+  if (!image) return 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop';
+  if (image.startsWith('http')) return image;
+  return `${API_BASE}/uploads/${image}`;
+}
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -52,19 +60,12 @@ export default function ProductsPage() {
     : products.filter(p => p.category_id === parseInt(selectedCategory));
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="pt-20">
-        {/* Page Header */}
-        <section className="relative bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white py-24 lg:py-32 overflow-hidden">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="container mx-auto px-4 lg:px-6 relative z-10">
-            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-6" data-aos="fade-up">Our Products</h1>
-            <p className="text-xl lg:text-2xl text-red-100 max-w-3xl" data-aos="fade-up" data-aos-delay="100">
-              Comprehensive fire safety solutions for every application
-            </p>
-          </div>
-        </section>
+    <SiteLayout>
+      <PageHero
+        kicker="Products"
+        title="Our Products"
+        subtitle="Comprehensive fire safety solutions for every application."
+      />
 
         {/* Category Filter */}
         <section className="py-10 bg-white border-b border-gray-200 sticky top-20 z-40 shadow-sm">
@@ -74,7 +75,7 @@ export default function ProductsPage() {
                 onClick={() => setSelectedCategory('all')}
                 className={`px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 ${
                   selectedCategory === 'all'
-                    ? 'bg-red-600 text-white shadow-lg scale-105'
+                    ? 'bg-[var(--sz-brand)] text-white shadow-lg scale-105'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -86,7 +87,7 @@ export default function ProductsPage() {
                   onClick={() => setSelectedCategory(category.id.toString())}
                   className={`px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 ${
                     selectedCategory === category.id.toString()
-                      ? 'bg-red-600 text-white shadow-lg scale-105'
+                      ? 'bg-[var(--sz-brand)] text-white shadow-lg scale-105'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -127,14 +128,14 @@ export default function ProductsPage() {
                       >
                         <div className="relative h-72 overflow-hidden bg-gray-100">
                           <img
-                            src={product.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop'}
+                            src={getImageUrl(product.image)}
                             alt={product.name}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                           {product.datasheet && (
                             <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-2">
                               <a 
-                                href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/uploads/${product.datasheet}`} 
+                                href={`${API_BASE}/uploads/${product.datasheet}`} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="flex flex-col items-center text-center"
@@ -171,9 +172,6 @@ export default function ProductsPage() {
             )}
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </SiteLayout>
   );
 }
-

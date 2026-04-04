@@ -1,7 +1,6 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import SiteLayout from '../../components/SiteLayout';
 import { projectsAPI } from '../../lib/api';
 
 export default function ProjectsPage() {
@@ -86,18 +85,16 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="pt-20">
+    <SiteLayout mainClassName="bg-gray-50">
         {/* Prestigious Projects Section */}
         <section className="py-20 px-4 lg:px-8 bg-gradient-to-br from-gray-50 to-gray-100">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
             <div className="text-right mb-16">
-              <h2 className="text-2xl md:text-3xl font-bold text-red-600 tracking-wider uppercase">
+              <h2 className="text-2xl md:text-3xl font-bold text-[var(--sz-ink)] tracking-wider uppercase">
                 Prestigious Projects
               </h2>
-              <div className="w-20 h-1 bg-red-600 ml-auto mt-4"></div>
+              <div className="w-20 h-1 bg-[var(--sz-brand)] ml-auto mt-4"></div>
             </div>
 
             {/* Projects Grid Layout */}
@@ -149,7 +146,7 @@ export default function ProjectsPage() {
                     <span className="mr-4">📍 {displayProjects[2].location || 'Dubai, UAE'}</span>
                     <span>📅 {displayProjects[2].year || '2024'}</span>
                   </div>
-                  <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 inline-flex items-center group">
+                  <button className="bg-[var(--sz-brand)] hover:bg-[var(--sz-brand-hover)] text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 inline-flex items-center group">
                     Explore Project
                     <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -163,15 +160,13 @@ export default function ProjectsPage() {
             <div className="text-center mt-16">
               <button 
                 onClick={() => router.push('/projects')}
-                className="bg-red-600 hover:bg-red-700 text-white px-10 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="bg-[var(--sz-brand)] hover:bg-[var(--sz-brand-hover)] text-white px-10 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 View All Projects
               </button>
             </div>
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </SiteLayout>
   );
 }

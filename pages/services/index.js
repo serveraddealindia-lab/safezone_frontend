@@ -1,5 +1,5 @@
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import SiteLayout from '../../components/SiteLayout';
+import PageHero from '../../components/PageHero';
 import { Shield, Zap, Award, Users, Wrench, FileCheck, ArrowRight } from 'lucide-react';
 
 export default function ServicesPage() {
@@ -73,19 +73,12 @@ export default function ServicesPage() {
   ];
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="pt-20">
-        {/* Page Header */}
-        <section className="relative bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white py-24 lg:py-32 overflow-hidden">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="container mx-auto px-4 lg:px-6 relative z-10">
-            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-6" data-aos="fade-up">Our Services</h1>
-            <p className="text-xl lg:text-2xl text-red-100 max-w-3xl" data-aos="fade-up" data-aos-delay="100">
-              Comprehensive fire safety services from installation to maintenance
-            </p>
-          </div>
-        </section>
+    <SiteLayout>
+      <PageHero
+        kicker="Services"
+        title="Our Services"
+        subtitle="Comprehensive fire safety services from installation to maintenance."
+      />
 
         {/* Services Grid */}
         <section className="py-24 bg-gradient-to-b from-white to-gray-50">
@@ -140,9 +133,7 @@ export default function ServicesPage() {
             </a>
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </SiteLayout>
   );
 }
 

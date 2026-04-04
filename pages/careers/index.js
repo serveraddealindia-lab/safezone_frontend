@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import SiteLayout from '../../components/SiteLayout';
+import PageHero from '../../components/PageHero';
 import { MapPin, Clock, Briefcase, ArrowRight } from 'lucide-react';
 
 export default function CareersPage() {
@@ -27,19 +27,12 @@ export default function CareersPage() {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="pt-20">
-        {/* Page Header */}
-        <section className="relative bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white py-24 lg:py-32 overflow-hidden">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="container mx-auto px-4 lg:px-6 relative z-10">
-            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-6" data-aos="fade-up">Careers</h1>
-            <p className="text-xl lg:text-2xl text-red-100 max-w-3xl" data-aos="fade-up" data-aos-delay="100">
-              Join our team and help protect lives and property
-            </p>
-          </div>
-        </section>
+    <SiteLayout>
+      <PageHero
+        kicker="Company"
+        title="Careers"
+        subtitle="Join our team and help protect lives and property."
+      />
 
         {/* Why Join Us */}
         <section className="py-24 bg-gradient-to-b from-white to-gray-50">
@@ -127,7 +120,7 @@ export default function CareersPage() {
                       </div>
                       <p className="text-gray-600 leading-relaxed">{job.description}</p>
                     </div>
-                    <button className="mt-6 lg:mt-0 lg:ml-8 inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap">
+                    <button className="mt-6 lg:mt-0 lg:ml-8 inline-flex items-center bg-[var(--sz-brand)] hover:bg-[var(--sz-brand-hover)] text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap">
                       Apply Now <ArrowRight className="w-5 h-5 ml-2" />
                     </button>
                   </div>
@@ -139,9 +132,7 @@ export default function CareersPage() {
             )}
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </SiteLayout>
   );
 }
 

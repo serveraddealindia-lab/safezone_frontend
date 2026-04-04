@@ -15,12 +15,24 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isOverHero = !isScrolled;
-  const headerBg = isOverHero ? 'bg-black/30 backdrop-blur-sm' : 'bg-white shadow-md';
-  const textNav = isOverHero ? 'text-white' : 'text-gray-800';
-  const logoText = isOverHero ? 'text-white' : 'text-gray-900';
-  const logoSub = isOverHero ? 'text-white/90' : 'text-gray-600';
-  const mobileIcon = isOverHero && !mobileMenuOpen ? 'text-white' : 'text-gray-900';
+  const isHome = router.pathname === '/';
+  const onHero = isHome && !isScrolled;
+
+  const headerBg = onHero
+    ? 'bg-transparent'
+    : isHome
+      ? 'bg-black'
+      : 'bg-white shadow-md';
+
+  const ink = onHero || (isHome && isScrolled)
+    ? 'text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]'
+    : 'text-[var(--sz-ink)]';
+  const subInk = onHero || (isHome && isScrolled)
+    ? 'text-white/85'
+    : 'text-[var(--sz-ink-subtle)]';
+  const iconBtn = onHero
+    ? 'bg-white/10 text-white ring-1 ring-white/20'
+    : 'bg-white text-[var(--sz-ink)] shadow-sm ring-1 ring-black/10';
 
   const limitedNav = [
     { name: 'Home', href: '/' },
@@ -31,25 +43,29 @@ export default function Header() {
 
   return (
     <>
-      {/* NAFFCO-style: semi-transparent overlay on hero, Search center, Products + Hamburger right */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBg}`}>
+      {/* NAFFCO-like: transparent on hero, sticky white after scroll */}
+      <header className={`fixed top-0 left-0 right-0 z-50 ${headerBg} transition-all duration-300`}>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             <Link href="/" className="flex items-center space-x-3 flex-shrink-0">
-              <div className="w-10 h-10 lg:w-11 lg:h-11 bg-[#c40000] flex items-center justify-center">
+              <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-[10px] bg-[var(--sz-brand)] flex items-center justify-center shadow-sm">
                 <span className="text-white font-bold text-lg lg:text-xl">SZ</span>
               </div>
               <div className="flex flex-col">
-                <span className={`text-lg lg:text-xl font-bold leading-tight ${logoText}`}>SAFE ZONE</span>
-                <span className={`text-xs font-medium uppercase tracking-wider ${logoSub}`}>Passion to Protect</span>
+                <span className={`text-lg lg:text-xl font-extrabold leading-tight tracking-tight ${ink}`}>SAFE ZONE</span>
+                <span className={`text-xs font-semibold uppercase tracking-[0.14em] ${subInk}`}>Passion to Protect</span>
               </div>
             </Link>
 
-            {/* Center: Search — rounded translucent field */}
+            {/* Center: Search — NAFFCO-style pill */}
             <div className="hidden lg:flex flex-1 justify-center px-8">
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full ${isOverHero ? 'bg-white/10 border border-white/30 text-white placeholder-white/70' : 'bg-gray-100 border border-gray-200 text-gray-700'} transition-colors w-full max-w-xs`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full border transition-colors w-full max-w-xs ${
+                  onHero
+                    ? 'bg-white/5 border-white/40 text-white placeholder-white/80 hover:bg-white/10'
+                    : 'bg-[var(--sz-surface-2)] border-[var(--sz-border)] text-[var(--sz-ink-muted)] hover:bg-white'
+                }`}
               >
                 <Search className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm">Search</span>
@@ -60,13 +76,17 @@ export default function Header() {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/products"
-                className={`flex items-center px-4 py-2.5 rounded-full text-sm font-medium border transition-colors ${isOverHero ? 'border-white/50 text-white bg-white/5 hover:bg-white/10' : 'border-gray-300 text-gray-800 bg-white hover:bg-gray-50'}`}
+                className={`flex items-center px-4 py-2.5 rounded-full text-sm font-semibold border transition-colors ${
+                  onHero
+                    ? 'border-white/60 text-white bg-transparent hover:bg-white/10'
+                    : 'border-[var(--sz-border)] text-[var(--sz-ink)] bg-white hover:bg-[var(--sz-surface-2)]'
+                }`}
               >
                 Products
               </Link>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isOverHero ? 'bg-white text-gray-900' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+                className="w-10 h-10 rounded-[10px] flex items-center justify-center transition-colors bg-white text-[var(--sz-ink)] shadow-sm ring-1 ring-black/10 hover:bg-[var(--sz-surface-2)]"
                 aria-label="Menu"
               >
                 <Menu className="w-5 h-5" />
@@ -74,7 +94,7 @@ export default function Header() {
             </div>
 
             <button
-              className={`lg:hidden p-2 ${mobileIcon}`}
+              className={`lg:hidden grid h-11 w-11 place-items-center rounded-[10px] active:scale-[0.98] transition ${iconBtn}`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menu"
             >
@@ -109,7 +129,7 @@ export default function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`block py-3 px-2 text-gray-700 hover:text-[#c40000] hover:bg-red-50/50 ${router.pathname === item.href ? 'font-semibold text-[#c40000]' : ''}`}
+                  className={`block py-3 px-2 rounded-[10px] text-[var(--sz-ink)] hover:text-[var(--sz-brand)] hover:bg-[var(--sz-surface-2)] ${router.pathname === item.href ? 'font-semibold text-[var(--sz-brand)]' : ''}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import SiteLayout from '../../components/SiteLayout';
+import PageHero from '../../components/PageHero';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
 import { contactAPI } from '../../lib/api';
 
@@ -36,19 +36,12 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="pt-20">
-        {/* Page Header */}
-        <section className="relative bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white py-24 lg:py-32 overflow-hidden">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="container mx-auto px-4 lg:px-6 relative z-10">
-            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-6" data-aos="fade-up">Contact Us</h1>
-            <p className="text-xl lg:text-2xl text-red-100 max-w-3xl" data-aos="fade-up" data-aos-delay="100">
-              Get in touch with our team for fire safety solutions
-            </p>
-          </div>
-        </section>
+    <SiteLayout>
+      <PageHero
+        kicker="Contact"
+        title="Contact Us"
+        subtitle="Get in touch with our team for fire safety solutions."
+      />
 
         {/* Contact Section */}
         <section className="py-24 bg-gradient-to-b from-white to-gray-50">
@@ -202,7 +195,7 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
+                    className="w-full bg-[var(--sz-brand)] hover:bg-[var(--sz-brand-hover)] disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
                   >
                     <Send className="w-5 h-5 mr-2" />
                     {loading ? 'Sending...' : 'Send Message'}
@@ -212,9 +205,7 @@ export default function ContactPage() {
             </div>
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </SiteLayout>
   );
 }
 
